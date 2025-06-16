@@ -4,7 +4,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from calculator_mcp.calculator import add, server
+from custom_mcp.calculator import add, server
 
 
 class TestCalculatorMCPServer:

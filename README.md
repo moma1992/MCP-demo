@@ -1,6 +1,6 @@
-# Calculator MCP Server
+# Custom MCP Tools Server
 
-FastMCPフレームワークを使用したPython製のMCP（Model Context Protocol）サーバーです。Claude Desktopで使用することで、計算機能とGitHub API連携機能を提供します。
+FastMCPフレームワークを使用したPython製のMCP（Model Context Protocol）サーバーです。Claude Desktopで使用することで、カスタムツール機能（計算機能とGitHub API連携機能）を提供します。
 
 ## 機能
 
@@ -84,13 +84,13 @@ Claude Desktopの設定ファイルを編集します：
 ```json
 {
   "mcpServers": {
-    "calculator": {
+    "custom-tools": {
       "command": "uv",
       "args": [
         "run",
         "python",
         "-m",
-        "calculator_mcp"
+        "custom_mcp"
       ],
       "cwd": "/path/to/your/mcp-demo"
     }
@@ -104,13 +104,13 @@ Claude Desktopの設定ファイルを編集します：
 ```json
 {
   "mcpServers": {
-    "calculator": {
+    "custom-tools": {
       "command": "uv",
       "args": [
         "run",
         "python",
         "-m",
-        "calculator_mcp"
+        "custom_mcp"
       ],
       "cwd": "/Users/username/mcp-demo"
     }
@@ -153,7 +153,7 @@ uv run pytest --cov       # カバレッジ付きテスト
 uv run pytest -v          # 詳細出力
 
 # 開発サーバー起動
-uv run python -m calculator_mcp  # STDIO版（Claude Desktop用）
+uv run python -m custom_mcp  # STDIO版（Claude Desktop用）
 ```
 
 ### 依存関係の管理
@@ -199,7 +199,7 @@ uv sync --reinstall
 ```bash
 # MCPサーバーを手動で起動してテスト
 cd /path/to/mcp-demo
-uv run python -m calculator_mcp
+uv run python -m custom_mcp
 ```
 
 ## 開発に参加する
@@ -218,10 +218,12 @@ uv run pre-commit run --all-files
 
 ```
 mcp-demo/
-├── src/calculator_mcp/     # メインパッケージ
+├── src/custom_mcp/         # メインパッケージ
 │   ├── __init__.py
 │   ├── __main__.py         # パッケージエントリポイント
-│   ├── calculator.py       # MCPツール定義
+│   ├── calculator.py       # MCPツール統合
+│   ├── calculator_tools.py # 数学系ツール
+│   ├── github_tools.py     # GitHub APIツール
 │   └── server.py          # STDIO輸送実装
 ├── tests/                  # テストスイート
 ├── pyproject.toml         # プロジェクト設定
