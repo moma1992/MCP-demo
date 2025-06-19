@@ -12,6 +12,11 @@ from .github_tools import (
     list_github_prs,
     update_github_issue
 )
+from .youtube_tools import (
+    search_youtube_videos,
+    get_video_details,
+    analyze_youtube_videos
+)
 
 # Load environment variables
 load_dotenv()
@@ -29,6 +34,11 @@ server.tool(description="Create a new GitHub issue")(create_github_issue)
 server.tool(description="List GitHub repository pull requests")(list_github_prs)
 server.tool(description="Update GitHub issue status, title, or body")(update_github_issue)
 
+# Register YouTube tools
+server.tool(description="Search YouTube videos with specified query and parameters")(search_youtube_videos)
+server.tool(description="Get detailed information about specific YouTube videos")(get_video_details)
+server.tool(description="Analyze YouTube videos and generate comprehensive report")(analyze_youtube_videos)
+
 # Make functions available for import (for backward compatibility with tests)
 __all__ = [
     "add",
@@ -37,6 +47,9 @@ __all__ = [
     "create_github_issue",
     "list_github_prs",
     "update_github_issue",
+    "search_youtube_videos",
+    "get_video_details",
+    "analyze_youtube_videos",
     "server",
     "create_custom_mcp_server",
     "main"
