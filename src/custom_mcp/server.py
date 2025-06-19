@@ -7,7 +7,7 @@ Implements STDIO transport for Model Context Protocol
 import json
 import sys
 from typing import Dict, Any, List
-from .calculator import create_calculator_server
+from .custom_mcp import create_custom_mcp_server
 
 
 class MCPServerSTDIO:
@@ -134,7 +134,7 @@ class MCPServerSTDIO:
     
     def run(self):
         """Run the MCP server with STDIO transport"""
-        sys.stderr.write("MCP Calculator Server starting...\n")
+        sys.stderr.write("MCP Custom Server starting...\n")
         sys.stderr.flush()
         
         try:
@@ -173,8 +173,8 @@ class MCPServerSTDIO:
 
 def main():
     """Main entry point for MCP server"""
-    calculator_server = create_calculator_server()
-    mcp_server = MCPServerSTDIO(calculator_server)
+    custom_mcp_server = create_custom_mcp_server()
+    mcp_server = MCPServerSTDIO(custom_mcp_server)
     mcp_server.run()
 
 

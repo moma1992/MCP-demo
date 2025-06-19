@@ -4,7 +4,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from custom_mcp.calculator import add, server
+from custom_mcp.custom_mcp import add, server
 
 
 class TestCalculatorMCPServer:
@@ -37,7 +37,7 @@ class TestCalculatorMCPServer:
 
     def test_server_instance(self) -> None:
         """Test that server instance is created"""
-        assert server.name == "Calculator"
+        assert server.name == "Custom MCP"
 
     def test_add_function_exists(self) -> None:
         """Test that add function is properly defined"""

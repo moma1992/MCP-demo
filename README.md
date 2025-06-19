@@ -221,7 +221,7 @@ mcp-demo/
 ├── src/custom_mcp/         # メインパッケージ
 │   ├── __init__.py
 │   ├── __main__.py         # パッケージエントリポイント
-│   ├── calculator.py       # MCPツール統合
+│   ├── custom_mcp.py       # MCPツール統合
 │   ├── calculator_tools.py # 数学系ツール
 │   ├── github_tools.py     # GitHub APIツール
 │   └── server.py          # STDIO輸送実装
