@@ -1,17 +1,18 @@
 """GitHub integration tools for repository operations"""
 
 import os
-from typing import Optional, List, Dict, Any
+from typing import Any
+
 import httpx
 
 
-def get_github_repo(owner: str, repo: str) -> Dict[str, Any]:
+def get_github_repo(owner: str, repo: str) -> dict[str, Any]:
     """Get information about a GitHub repository"""
     github_token = os.getenv("GITHUB_TOKEN")
     headers = {}
     if github_token:
         headers["Authorization"] = f"token {github_token}"
-    
+
     try:
         with httpx.Client() as client:
             response = client.get(
@@ -26,13 +27,13 @@ def get_github_repo(owner: str, repo: str) -> Dict[str, Any]:
         return {"error": f"An error occurred: {e}"}
 
 
-def list_github_issues(owner: str, repo: str, state: str = "open") -> List[Dict[str, Any]]:
+def list_github_issues(owner: str, repo: str, state: str = "open") -> list[dict[str, Any]]:
     """List issues from a GitHub repository"""
     github_token = os.getenv("GITHUB_TOKEN")
     headers = {}
     if github_token:
         headers["Authorization"] = f"token {github_token}"
-    
+
     try:
         with httpx.Client() as client:
             response = client.get(
@@ -48,17 +49,17 @@ def list_github_issues(owner: str, repo: str, state: str = "open") -> List[Dict[
         return [{"error": f"An error occurred: {e}"}]
 
 
-def create_github_issue(owner: str, repo: str, title: str, body: Optional[str] = None) -> Dict[str, Any]:
+def create_github_issue(owner: str, repo: str, title: str, body: str | None = None) -> dict[str, Any]:
     """Create a new issue in a GitHub repository"""
     github_token = os.getenv("GITHUB_TOKEN")
     if not github_token:
         return {"error": "GitHub token is required to create issues"}
-    
+
     headers = {"Authorization": f"token {github_token}"}
     data = {"title": title}
     if body:
         data["body"] = body
-    
+
     try:
         with httpx.Client() as client:
             response = client.post(
@@ -74,13 +75,13 @@ def create_github_issue(owner: str, repo: str, title: str, body: Optional[str] =
         return {"error": f"An error occurred: {e}"}
 
 
-def list_github_prs(owner: str, repo: str, state: str = "open") -> List[Dict[str, Any]]:
+def list_github_prs(owner: str, repo: str, state: str = "open") -> list[dict[str, Any]]:
     """List pull requests from a GitHub repository"""
     github_token = os.getenv("GITHUB_TOKEN")
     headers = {}
     if github_token:
         headers["Authorization"] = f"token {github_token}"
-    
+
     try:
         with httpx.Client() as client:
             response = client.get(
@@ -96,30 +97,30 @@ def list_github_prs(owner: str, repo: str, state: str = "open") -> List[Dict[str
         return [{"error": f"An error occurred: {e}"}]
 
 
-def update_github_issue(owner: str, repo: str, issue_number: int, state: Optional[str] = None, 
-                       title: Optional[str] = None, body: Optional[str] = None) -> Dict[str, Any]:
+def update_github_issue(owner: str, repo: str, issue_number: int, state: str | None = None,
+                       title: str | None = None, body: str | None = None) -> dict[str, Any]:
     """Update a GitHub issue (state, title, or body)"""
     github_token = os.getenv("GITHUB_TOKEN")
     if not github_token:
         return {"error": "GitHub token is required to update issues"}
-    
+
     headers = {"Authorization": f"token {github_token}"}
     data = {}
-    
+
     if state:
         if state not in ["open", "closed"]:
             return {"error": "state must be either 'open' or 'closed'"}
         data["state"] = state
-    
+
     if title:
         data["title"] = title
-    
+
     if body:
         data["body"] = body
-    
+
     if not data:
         return {"error": "At least one field (state, title, or body) must be provided"}
-    
+
     try:
         with httpx.Client() as client:
             response = client.patch(

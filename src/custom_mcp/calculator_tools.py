@@ -1,8 +1,7 @@
 """Calculator tools for mathematical operations"""
 
-from typing import Union
 
 
-def add(a: Union[int, float], b: Union[int, float]) -> Union[int, float]:
+def add(a: int | float, b: int | float) -> int | float:
     """Add two numbers together"""
     return a + b
