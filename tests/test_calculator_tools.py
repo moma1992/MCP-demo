@@ -1,7 +1,8 @@
 """Test cases for calculator MCP server using FastMCP library"""
 
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from custom_mcp.custom_mcp import add, server

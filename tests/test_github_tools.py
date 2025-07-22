@@ -1,18 +1,19 @@
 """Test cases for GitHub tools using FastMCP library"""
 
-import sys
 import os
-import pytest
-import httpx
+import sys
 from unittest.mock import patch
+
+import pytest
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from custom_mcp.github_tools import (
+    create_github_issue,
     get_github_repo,
     list_github_issues,
-    create_github_issue,
     list_github_prs,
-    update_github_issue
+    update_github_issue,
 )
 
 
@@ -66,9 +67,9 @@ class TestGitHubTools:
             url="https://api.github.com/repos/testuser/test-repo",
             json=mock_repo_response
         )
-        
+
         result = get_github_repo("testuser", "test-repo")
-        
+
         assert result["name"] == "test-repo"
         assert result["full_name"] == "testuser/test-repo"
         assert result["stargazers_count"] == 42
@@ -82,9 +83,9 @@ class TestGitHubTools:
                 json=mock_repo_response,
                 match_headers={"Authorization": "token test_token"}
             )
-            
+
             result = get_github_repo("testuser", "test-repo")
-            
+
             assert result["name"] == "test-repo"
 
     def test_get_github_repo_error(self, httpx_mock):
@@ -94,9 +95,9 @@ class TestGitHubTools:
             url="https://api.github.com/repos/testuser/nonexistent",
             status_code=404
         )
-        
+
         result = get_github_repo("testuser", "nonexistent")
-        
+
         assert "error" in result
         assert "HTTP error occurred" in result["error"]
 
@@ -107,9 +108,9 @@ class TestGitHubTools:
             url="https://api.github.com/repos/testuser/test-repo/issues?state=open",
             json=[mock_issue_response]
         )
-        
+
         result = list_github_issues("testuser", "test-repo")
-        
+
         assert len(result) == 1
         assert result[0]["title"] == "Test Issue"
         assert result[0]["state"] == "open"
@@ -118,15 +119,15 @@ class TestGitHubTools:
         """Test issues listing with specific state"""
         closed_issue = mock_issue_response.copy()
         closed_issue["state"] = "closed"
-        
+
         httpx_mock.add_response(
             method="GET",
             url="https://api.github.com/repos/testuser/test-repo/issues?state=closed",
             json=[closed_issue]
         )
-        
+
         result = list_github_issues("testuser", "test-repo", "closed")
-        
+
         assert len(result) == 1
         assert result[0]["state"] == "closed"
 
@@ -139,9 +140,9 @@ class TestGitHubTools:
                 json=mock_issue_response,
                 match_headers={"Authorization": "token test_token"}
             )
-            
+
             result = create_github_issue("testuser", "test-repo", "Test Issue", "Test body")
-            
+
             assert result["title"] == "Test Issue"
             assert result["number"] == 1
 
@@ -149,7 +150,7 @@ class TestGitHubTools:
         """Test issue creation without token"""
         with patch.dict(os.environ, {}, clear=True):
             result = create_github_issue("testuser", "test-repo", "Test Issue")
-            
+
             assert "error" in result
             assert "GitHub token is required" in result["error"]
 
@@ -160,9 +161,9 @@ class TestGitHubTools:
             url="https://api.github.com/repos/testuser/test-repo/pulls?state=open",
             json=[mock_pr_response]
         )
-        
+
         result = list_github_prs("testuser", "test-repo")
-        
+
         assert len(result) == 1
         assert result[0]["title"] == "Test PR"
         assert result[0]["number"] == 2
@@ -171,7 +172,7 @@ class TestGitHubTools:
         """Test successful issue update"""
         updated_issue = mock_issue_response.copy()
         updated_issue["state"] = "closed"
-        
+
         with patch.dict(os.environ, {"GITHUB_TOKEN": "test_token"}):
             httpx_mock.add_response(
                 method="PATCH",
@@ -179,9 +180,9 @@ class TestGitHubTools:
                 json=updated_issue,
                 match_headers={"Authorization": "token test_token"}
             )
-            
+
             result = update_github_issue("testuser", "test-repo", 1, state="closed")
-            
+
             assert result["state"] == "closed"
             assert result["number"] == 1
 
@@ -189,7 +190,7 @@ class TestGitHubTools:
         """Test issue update without token"""
         with patch.dict(os.environ, {}, clear=True):
             result = update_github_issue("testuser", "test-repo", 1, state="closed")
-            
+
             assert "error" in result
             assert "GitHub token is required" in result["error"]
 
@@ -197,7 +198,7 @@ class TestGitHubTools:
         """Test issue update with invalid state"""
         with patch.dict(os.environ, {"GITHUB_TOKEN": "test_token"}):
             result = update_github_issue("testuser", "test-repo", 1, state="invalid")
-            
+
             assert "error" in result
             assert "state must be either 'open' or 'closed'" in result["error"]
 
@@ -205,7 +206,7 @@ class TestGitHubTools:
         """Test issue update with no fields provided"""
         with patch.dict(os.environ, {"GITHUB_TOKEN": "test_token"}):
             result = update_github_issue("testuser", "test-repo", 1)
-            
+
             assert "error" in result
             assert "At least one field" in result["error"]
 
@@ -217,7 +218,7 @@ class TestGitHubTools:
             "body": "Updated body",
             "state": "closed"
         })
-        
+
         with patch.dict(os.environ, {"GITHUB_TOKEN": "test_token"}):
             httpx_mock.add_response(
                 method="PATCH",
@@ -225,14 +226,14 @@ class TestGitHubTools:
                 json=updated_issue,
                 match_headers={"Authorization": "token test_token"}
             )
-            
+
             result = update_github_issue(
                 "testuser", "test-repo", 1,
                 state="closed",
                 title="Updated Title",
                 body="Updated body"
             )
-            
+
             assert result["state"] == "closed"
             assert result["title"] == "Updated Title"
             assert result["body"] == "Updated body"
